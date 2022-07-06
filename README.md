@@ -6,14 +6,14 @@ Tools for moving and saving indices.
 ![picture](https://raw.github.com/elasticsearch-dump/elasticsearch-dump/master/elasticdump.jpg)
 
 ---
-
-[![Nodei stats](https://nodei.co/npm/elasticdump.png?downloads=true)](https://npmjs.org/package/elasticdump)
-<br />
 [![DockerHub Badge](https://dockeri.co/image/elasticdump/elasticsearch-dump)](https://hub.docker.com/r/elasticdump/elasticsearch-dump/)
+
 [![DockerHub Badge](https://dockeri.co/image/taskrabbit/elasticsearch-dump)](https://hub.docker.com/r/taskrabbit/elasticsearch-dump/)
 
-[![Build Status](https://secure.travis-ci.org/elasticsearch-dump/elasticsearch-dump.png?branch=master)](http://travis-ci.org/elasticsearch-dump/elasticsearch-dump)
-[![Downloads](https://img.shields.io/npm/dm/elasticdump.svg)](https://npmjs.com/elasticdump)
+![Build Status](https://github.com/elasticsearch-dump/elasticsearch-dump/actions/workflows/elasticdump.yaml/badge.svg)
+[![npm version](https://badge.fury.io/js/elasticdump.svg)](https://badge.fury.io/js/elasticdump)
+[![NPM Weekly stats](https://img.shields.io/npm/dw/elasticdump.svg)](https://npmjs.org/package/elasticdump)
+[![NPM Monthly stats](https://img.shields.io/npm/dm/elasticdump.svg)](https://npmjs.org/package/elasticdump)
 
 
 ## Version Warnings!
@@ -339,6 +339,11 @@ Usage: elasticdump --input SOURCE --output DESTINATION [OPTIONS]
                     See https://www.elastic.co/guide/en/elasticsearch/reference/current/search-template.html for 
                     further information
                     (default: false)
+--searchBodyTemplate
+                    A method/function which can be called to the searchBody
+                        doc.searchBody = { query: { match_all: {} }, stored_fields: [], _source: true };
+                    May be used multiple times.
+                    Additionally, searchBodyTemplate may be performed by a module. See [searchBody Template](#search-template) below.
 --headers
                     Add custom headers to Elastisearch requests (helpful when
                     your Elasticsearch instance sits behind a proxy)
@@ -569,6 +574,9 @@ Usage: elasticdump --input SOURCE --output DESTINATION [OPTIONS]
 --csvIgnoreEmpty        
                     Set to true to ignore empty rows. 
                     (default : false)
+--csvIgnoreAutoColumns        
+                    Set to true to prevent the following columns @id, @index, @type from being written to the output file
+                    (default : false)
 --csvSkipLines        
                     If number is > 0 the specified number of lines will be skipped.
                     (default : 0)
@@ -713,6 +721,25 @@ with a module at `./transforms/my-transform.js` with the following:
 will load module `./transforms/my-transform.js', and execute the function with `doc` and `options` = `{"param1": "value", "param2": "another-value"}`.
 
 An example transform for anonymizing data on-the-fly can be found in the `transforms` folder.
+
+## searchBody Template
+
+When specifying the `searchBodyTemplate` option, prefix the value with `@` (a curl convention) to load the top-level function which is called with the document and the parsed arguments to the module.
+
+Uses a pseudo-URL format to specify arguments to the module as follows. Given:
+
+    elasticdump --searchBodyTemplate='@./temapltes/my-teamplate?param1=value&param2=another-value'
+
+with a module at `./transforms/my-transform.js` with the following:
+
+    module.exports = function (doc, options) {
+        // result must be added to doc.searchBody
+        doc.searchBody = {}
+    };
+
+will load module `./temapltes/my-teamplate.js', and execute the function with `doc` and `options` = `{"param1": "value", "param2": "another-value"}`.
+
+An example template for modifying dates using a simple templating engine is available in the `templates` folder.
 
 ## How Elasticdump handles Nested Data in CSV
 
