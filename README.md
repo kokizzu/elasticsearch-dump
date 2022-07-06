@@ -9,9 +9,10 @@ Tools for moving and saving indices.
 
 [![NPM Weekly stats](https://img.shields.io/npm/dw/elasticdump.svg)](https://npmjs.org/package/elasticdump)
 [![NPM Monthly stats](https://img.shields.io/npm/dm/elasticdump.svg)](https://npmjs.org/package/elasticdump)
-
 <br />
+
 [![DockerHub Badge](https://dockeri.co/image/elasticdump/elasticsearch-dump)](https://hub.docker.com/r/elasticdump/elasticsearch-dump/)
+
 [![DockerHub Badge](https://dockeri.co/image/taskrabbit/elasticsearch-dump)](https://hub.docker.com/r/taskrabbit/elasticsearch-dump/)
 
 ![Build Status](https://github.com/elasticsearch-dump/elasticsearch-dump/actions/workflows/elasticdump.yaml/badge.svg)
